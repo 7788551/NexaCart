@@ -1,0 +1,113 @@
+﻿
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+
+            <div class="card shadow">
+
+                <div class="card-header text-center">
+                    <h3>Login</h3>
+                </div>
+
+                <div class="card-body">
+
+                    <div id="message"></div>
+
+                    <form id="loginForm">
+
+                        <div class="mb-3">
+                            <label>Email</label>
+                            <input type="email"
+                                   id="Email"
+                                   class="form-control"
+                                   placeholder="Enter Email"
+                                   required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Password</label>
+                            <input type="password"
+                                   id="PasswordHash"
+                                   class="form-control"
+                                   placeholder="Enter Password"
+                                   required />
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+                            Login
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+
+        $(document).ready(function () {
+
+            $("#loginForm").submit(function (e) {
+
+                e.preventDefault();
+
+                var user = {
+                    Email: $("#Email").val(),
+                    PasswordHash: $("#PasswordHash").val()
+                };
+
+                $.ajax({
+
+                    url: "/api/AccountApi/login",
+
+                    type: "POST",
+
+                    contentType: "application/json",
+
+                    data: JSON.stringify(user),
+
+                    success: function (response) {
+
+                        $("#message").html(
+                            '<div class="alert alert-success">' +
+                            response.message +
+                            '</div>'
+                        );
+
+                        window.location.href = response.redirectUrl;
+                    },
+
+                    error: function (xhr) {
+
+                        var message = "Something went wrong!";
+
+                        if (xhr.responseJSON &&
+                            xhr.responseJSON.message) {
+
+                            message = xhr.responseJSON.message;
+                        }
+
+                        $("#message").html(
+                            '<div class="alert alert-danger">' +
+                            message +
+                            '</div>'
+                        );
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+}
